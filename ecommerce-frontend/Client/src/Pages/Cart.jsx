@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Table, TableBody, TableCell, TableHead, TableRow, TableContainer,
-  Paper, IconButton, Typography, Card, CardContent, Divider, Box, Chip
+  Paper, IconButton, Typography, Card, CardContent, Divider, Box, Chip, CircularProgress
 } from "@mui/material";
 import { Add, Remove, ShoppingCart, LocalShipping, Delete } from "@mui/icons-material";
 import { useCart } from "../context/CartContext";
@@ -10,9 +10,15 @@ import { toast } from "react-toastify";
 
 export default function CartPage() {
   const { cart, fetchCart, updateQuantity, removeFromCart } = useCart();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCart();
+    const loadCart = async () => {
+      setLoading(true);
+      await fetchCart();
+      setLoading(false);
+    };
+    loadCart();
   }, []);
 
   const handleDecrease = (productId, currentQty) => {
@@ -71,6 +77,57 @@ export default function CartPage() {
       </CardContent>
     </Card>
   );
+
+  // Loading spinner component
+  if (loading) {
+    return (
+      <Box sx={{ minHeight: '60vh' }}>
+        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
+            <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+            <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+          </div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+                My <span className="text-yellow-300">Cart</span>
+              </h1>
+              <nav className="flex items-center justify-center space-x-2 text-sm">
+                <Link to="/" className="text-blue-200 hover:text-white font-medium transition-colors duration-200">
+                  Home
+                </Link>
+                <span className="text-blue-300">/</span>
+                <span className="text-white font-medium">Cart</span>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '400px',
+          flexDirection: 'column',
+          gap: 2 
+        }}>
+          <div className="flex items-center justify-center py-10">
+              <div className="relative">
+                <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+            <Typography variant="h6" sx={{ color: 'grey.600', fontWeight: 500 }}>
+            Loading your cart...
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   if ((cart || []).length === 0) {
     return (

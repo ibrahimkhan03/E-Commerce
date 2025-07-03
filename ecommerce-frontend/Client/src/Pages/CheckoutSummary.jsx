@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useCart } from "../context/CartContext"
@@ -29,7 +27,7 @@ const CheckoutSummary = () => {
 
     setIsLoading(true)
     try {
-      const response = await axios.post("http://localhost:5000/api/stripe/create-checkout-session", {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/stripe/create-checkout-session`, {
         cartItems: cart,
         shippingAddress: address,
         amount: total,

@@ -332,11 +332,11 @@ const ContactPage = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">Phone Numbers</h3>
                     <p className="text-gray-600">
-                      Customer Care: +91 98765 43210
+                      Customer Care: +91 98765 11111
                       <br />
-                      Business: +91 98765 43211
+                      Business: +91 44422 44211
                       <br />
-                      WhatsApp: +91 98765 43212
+                      WhatsApp: +91 22233 43222
                     </p>
                   </div>
                 </div>

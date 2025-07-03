@@ -13,6 +13,7 @@ const AddressSection = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -33,10 +34,13 @@ const AddressSection = () => {
 
   const loadAddresses = async () => {
     try {
+      setLoading(true);
       const data = await fetchAddresses(user.id, token);
       setAddresses(data);
     } catch (err) {
       console.error("Failed to fetch addresses", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,157 +163,174 @@ const AddressSection = () => {
             </button>
           </div>
 
-          {/* Empty State */}
-          {addresses.length === 0 && (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 lg:p-12 text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+          {/* Loading Spinner */}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <div className="relative">
+                <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">No addresses yet</h3>
-              <p className="text-gray-500">Add your first delivery address to continue</p>
             </div>
           )}
 
-          {/* Address Cards */}
-          <div className="grid gap-4 lg:gap-6">
-            {addresses.map((addr, index) => (
-              <div
-                key={index}
-                className={`group relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${selectedAddressIndex === index
-                    ? 'border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 shadow-green-200/50'
-                    : 'border-gray-100 hover:border-gray-200'
-                  }`}
-              >
-                <div className="p-6 lg:p-8">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
-                    {/* Address Info */}
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
-                          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-800">{addr.name}</h3>
-                      </div>
-
-                      <div className="space-y-2 text-gray-600">
-                        <p className="flex items-start space-x-2">
-                          <svg className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <span>{`${addr.address}, ${addr.locality}, ${addr.city}, ${addr.state} - ${addr.pincode}`}</span>
-                        </p>
-                        <p className="flex items-center space-x-2">
-                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          <span>{addr.mobile}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex sm:flex-col space-x-2 sm:space-x-0 sm:space-y-2">
-                      <button
-                        onClick={() => handleSelect(index)}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex-1 sm:flex-none ${selectedAddressIndex === index
-                            ? 'bg-green-500 text-white shadow-lg shadow-green-200'
-                            : 'bg-blue-500 hover:bg-blue-600 text-white hover:shadow-lg hover:shadow-blue-200'
-                          }`}
-                      >
-                        {selectedAddressIndex === index ? (
-                          <span className="flex items-center justify-center space-x-1">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Selected</span>
-                          </span>
-                        ) : (
-                          'Select'
-                        )}
-                      </button>
-
-                      <button
-                        onClick={() => handleEdit(index)}
-                        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-amber-200 flex-1 sm:flex-none"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() => handleDelete(index)}
-                        className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-red-200 flex-1 sm:flex-none"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Selected Address Indicator */}
-                {selectedAddressIndex === index && (
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          {/* Content (only show when not loading) */}
+          {!loading && (
+            <>
+              {/* Empty State */}
+              {addresses.length === 0 && (
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 lg:p-12 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Selected Address Summary */}
-          {selectedAddress && (
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 lg:p-8 shadow-lg">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No addresses yet</h3>
+                  <p className="text-gray-500">Add your first delivery address to continue</p>
                 </div>
-                <h3 className="text-xl font-bold text-green-800">Selected Delivery Address</h3>
-              </div>
-              <div className="bg-white/70 rounded-xl p-4 space-y-2">
-                <p className="font-semibold text-gray-800">{selectedAddress.name} - {selectedAddress.mobile}</p>
-                <p className="text-gray-600">
-                  {`${selectedAddress.address}, ${selectedAddress.locality}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}`}
-                </p>
-              </div>
-            </div>
-          )}
+              )}
 
-          {/* Checkout Button */}
-          <div className="flex justify-center pt-4">
-            <Link
-              to="/checkout-summary"
-              state={{
-                address: selectedAddress,
-              }}
-            >
-              <button
-                disabled={selectedAddressIndex === null}
-                className={`group relative overflow-hidden px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 min-w-[200px] ${selectedAddressIndex === null
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl hover:shadow-green-200 focus:ring-green-300/50'
-                  }`}
-              >
-                <span className="relative z-10 flex items-center justify-center space-x-2">
-                  <span>Proceed to Checkout</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-                {selectedAddressIndex !== null && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-700 to-emerald-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                )}
-              </button>
-            </Link>
-          </div>
+              {/* Address Cards */}
+              <div className="grid gap-4 lg:gap-6">
+                {addresses.map((addr, index) => (
+                  <div
+                    key={index}
+                    className={`group relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${selectedAddressIndex === index
+                        ? 'border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 shadow-green-200/50'
+                        : 'border-gray-100 hover:border-gray-200'
+                      }`}
+                  >
+                    <div className="p-6 lg:p-8">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
+                        {/* Address Info */}
+                        <div className="flex-1 space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
+                              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-800">{addr.name}</h3>
+                          </div>
+
+                          <div className="space-y-2 text-gray-600">
+                            <p className="flex items-start space-x-2">
+                              <svg className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              <span>{`${addr.address}, ${addr.locality}, ${addr.city}, ${addr.state} - ${addr.pincode}`}</span>
+                            </p>
+                            <p className="flex items-center space-x-2">
+                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                              </svg>
+                              <span>{addr.mobile}</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex sm:flex-col space-x-2 sm:space-x-0 sm:space-y-2">
+                          <button
+                            onClick={() => handleSelect(index)}
+                            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex-1 sm:flex-none ${selectedAddressIndex === index
+                                ? 'bg-green-500 text-white shadow-lg shadow-green-200'
+                                : 'bg-blue-500 hover:bg-blue-600 text-white hover:shadow-lg hover:shadow-blue-200'
+                              }`}
+                          >
+                            {selectedAddressIndex === index ? (
+                              <span className="flex items-center justify-center space-x-1">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Selected</span>
+                              </span>
+                            ) : (
+                              'Select'
+                            )}
+                          </button>
+
+                          <button
+                            onClick={() => handleEdit(index)}
+                            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-amber-200 flex-1 sm:flex-none"
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={() => handleDelete(index)}
+                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-red-200 flex-1 sm:flex-none"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Selected Address Indicator */}
+                    {selectedAddressIndex === index && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Selected Address Summary */}
+              {selectedAddress && (
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 lg:p-8 shadow-lg">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-green-800">Selected Delivery Address</h3>
+                  </div>
+                  <div className="bg-white/70 rounded-xl p-4 space-y-2">
+                    <p className="font-semibold text-gray-800">{selectedAddress.name} - {selectedAddress.mobile}</p>
+                    <p className="text-gray-600">
+                      {`${selectedAddress.address}, ${selectedAddress.locality}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}`}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Checkout Button */}
+              <div className="flex justify-center pt-4">
+                <Link
+                  to="/checkout-summary"
+                  state={{
+                    address: selectedAddress,
+                  }}
+                >
+                  <button
+                    disabled={selectedAddressIndex === null}
+                    className={`group relative overflow-hidden px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 min-w-[200px] ${selectedAddressIndex === null
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl hover:shadow-green-200 focus:ring-green-300/50'
+                      }`}
+                  >
+                    <span className="relative z-10 flex items-center justify-center space-x-2">
+                      <span>Proceed to Checkout</span>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </span>
+                    {selectedAddressIndex !== null && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-700 to-emerald-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                    )}
+                  </button>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

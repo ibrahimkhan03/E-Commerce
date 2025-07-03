@@ -6,13 +6,13 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import Logout from '@mui/icons-material/Logout';
+// import Logout from '@mui/icons-material/Logout';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import PersonIcon from '@mui/icons-material/Person';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Divider from '@mui/material/Divider';
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+// import { useAuth } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { toast } from "react-toastify";
 import { User } from "lucide-react";
@@ -34,27 +34,27 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
-  const navigate = useNavigate();
-  const { logout } = useAuth();
+  // const navigate = useNavigate();
+  // const { logout } = useAuth();
   const { clearCart, cart } = useCart();
 
   const uniqueItemCount = cart ? cart.length : 0;
 
-  const handleLogout = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      toast.info("You're already logged out.");
-      return;
-    }
+  // const handleLogout = () => {
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  //   if (!user) {
+  //     toast.info("You're already logged out.");
+  //     return;
+  //   }
 
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    clearCart();
-    logout?.();
-    toast.success("Logged out successfully!");
+  //   localStorage.removeItem("user");
+  //   localStorage.removeItem("token");
+  //   clearCart();
+  //   logout?.();
+  //   toast.success("Logged out successfully!");
 
-    navigate("/login");
-  };
+  //   navigate("/login");
+  // };
 
 
   return (
@@ -267,7 +267,7 @@ export default function Navbar() {
                     <span className="font-medium">My Wishlist</span>
                   </MenuItem>
                 </Link>
-                <MenuItem
+                {/* <MenuItem
                   onClick={handleLogout}
                   className="hover:bg-red-50 transition-colors duration-200"
                 >
@@ -275,7 +275,7 @@ export default function Navbar() {
                     <Logout fontSize="small" className="text-red-500" />
                   </ListItemIcon>
                   <span className="font-medium text-red-600">Logout</span>
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
 
               {/* Cart Icon */}
@@ -332,36 +332,36 @@ export default function Navbar() {
               <div className="px-4 py-3">
                 <span className="text-base font-semibold text-gray-700">Pages</span>
                 <div className="ml-4 mt-2 space-y-2">
-                  <NavLinknk
+                  <NavLink
                     to="/about"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2 text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-200"
                   >
                     About Us
-                  </NavLinknk>
-                  <NavLinknk
+                  </NavLink>
+                  <NavLink
                     to="/faq"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2 text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-200"
                   >
                     FAQ
-                  </NavLinknk>
+                  </NavLink>
                 </div>
               </div>
-              <Link
+              <NavLink
                 to="/blog"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 rounded-lg text-base font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300"
               >
                 Blog
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/contactus"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-4 py-3 rounded-lg text-base font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300"
               >
                 Contacts
-              </Link>
+              </NavLink>
             </div>
           </div>
         )}
