@@ -1,0 +1,13 @@
+
+@import "tailwindcss";
+
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #ffffff; /* Tailwind's bg-gray-100 */
+    color: #374151; /* Tailwind's text-gray-800 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  

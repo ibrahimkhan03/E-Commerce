@@ -1,0 +1,55 @@
+
+.auth-container {
+    display: flex;
+    height: 55vh;
+    background-color: #fff9f1;
+    border-radius: 20px;
+    padding-right: 20px;
+  }
+  
+  .auth-image {
+    flex: 1;
+    background: url('C:\Users\ibk80\Desktop\Ecommerce-Website\ecommerce-frontend\Admin\src\assets\pexels-steve-27594597.jpg') no-repeat center;
+    background-size: cover;
+    border-radius: 20px;
+    margin: 20px;
+    width: 30vw;
+  }
+  
+  .auth-form {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    margin: auto;
+    padding: 40px;
+  }
+  
+  .auth-form h2 {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  
+  .auth-form p {
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .auth-form input, .auth-form select {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .auth-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #d29b76;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
