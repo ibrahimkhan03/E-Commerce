@@ -20,8 +20,8 @@ exports.createCheckoutSession = async (req, res) => {
         quantity: item.quantity,
       })),
       mode: "payment",
-      success_url: "http://localhost:5173/payment-success",
-      cancel_url: "http://localhost:5173/payment-failed",
+      success_url: "https://e-commerce-ax0m.onrender.com/payment-success",
+      cancel_url: "https://e-commerce-ax0m.onrender.com/payment-failed",
       metadata: {
         userId,
         email,
