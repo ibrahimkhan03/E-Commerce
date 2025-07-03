@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../Styles/shop.css";
+import "../Styles/Shop.css";
 import { Link, useParams } from 'react-router-dom';
 
 const products = [
