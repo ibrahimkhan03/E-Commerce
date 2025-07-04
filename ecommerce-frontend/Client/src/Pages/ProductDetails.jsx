@@ -50,7 +50,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/${id}`);
         setProduct(res.data);
         const images = Array.isArray(res.data.image) ? res.data.image : [res.data.image];
         setSelectedImage(images[0]);
@@ -63,7 +63,7 @@ const ProductDetails = () => {
 
     const fetchReviews = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/review/product/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/review/product/${id}`);
         setReviews(res.data);
 
         if (res.data.length > 0) {
